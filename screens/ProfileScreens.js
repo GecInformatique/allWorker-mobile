@@ -1,64 +1,154 @@
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity,Image, StyleSheet  } from "react-native";
-import ScreenWrapper from "../components/screenWrapper";
-import { colors } from "../theme";
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+export default function ProfileScreen() {
+  return (
+    <ScrollView style={styles.container}>
+    <View style={styles.header}>
+        <TouchableOpacity>
+          <Ionicons name="arrow-back" size={24}  /> 
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="create-outline" size={24}  /> 
+        </TouchableOpacity>
+      </View>
+ 
+        <View style={styles.profileContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/100' }}
+          style={styles.profileImage}
+        />
+        <Text style={styles.name}>Michel Jordan</Text>
+        <Text style={styles.jobTitle}>UI/UX Designer</Text>
 
-export default function ProfileScreen(){
-    const navigation = useNavigation();
-    return (
-      <ScreenWrapper>
-        <View className="h-full flex justify-around p-5 bg-gray-100">
-          {/* Section de l'entête du profil */}
-          <View className="items-center mt-10">
-            <Image 
-              source={require('../assets/images/logo.png')}  
-              className="h-32 w-32 rounded-full border-4 border-green-500 shadow-lg" 
-            />
-            <Text className="text-xl font-bold mt-3">Nom de l'Utilisateur</Text>
-            <Text className="text-base text-gray-500">email@example.com</Text>
+        <View style={styles.infoRow}>
+          <View style={styles.infoBox}>
+            <Ionicons name="briefcase-outline" size={24} color="black" /> 
+            <Text style={styles.infoText}>100+</Text>
+            <Text style={styles.infoSubText}>Job done</Text>
           </View>
-  
-          {/* Section des options de profil */}
-          <View className="space-y-4 mt-10">
-            {/* Bouton "Mes tâches" */}
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('Tasks')} 
-              className="flex-row items-center p-4 bg-white rounded-xl shadow"
-            >
-              <Ionicons name="clipboard-outline" size={24} color="#0cb444" />
-              <Text className="ml-4 text-lg font-medium">Mes tâches</Text>
-            </TouchableOpacity>
-  
-            {/* Bouton "Paramètres" */}
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('Settings')} 
-              className="flex-row items-center p-4 bg-white rounded-xl shadow"
-            >
-              <Ionicons name="settings-outline" size={24} color="#0cb444" />
-              <Text className="ml-4 text-lg font-medium">Paramètres</Text>
-            </TouchableOpacity>
-  
-            {/* Bouton "Notifications" */}
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('Notifications')} 
-              className="flex-row items-center p-4 bg-white rounded-xl shadow"
-            >
-              <Ionicons name="notifications-outline" size={24} color="#0cb444" />
-              <Text className="ml-4 text-lg font-medium">Notifications</Text>
-            </TouchableOpacity>
-  
-            {/* Bouton "Déconnexion" */}
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('Login')} 
-              className="flex-row items-center p-4 bg-red-500 rounded-xl shadow"
-            >
-              <Ionicons name="log-out-outline" size={24} color="white" />
-              <Text className="ml-4 text-lg font-medium text-white">Déconnexion</Text>
-            </TouchableOpacity>
+          <View style={styles.infoBox}>
+            <Ionicons name="trophy-outline" size={24} color="black" /> 
+            <Text style={styles.infoText}>100+</Text>
+            <Text style={styles.infoSubText}>IHUZO Points</Text>
+          </View>
+          <View style={styles.infoBox}>
+            <Ionicons name="star-outline" size={24} color="black" /> 
+            <Text style={styles.infoText}>5.5</Text>
+            <Text style={styles.infoSubText}>Review</Text>
           </View>
         </View>
-      </ScreenWrapper>
-    )
+      </View>
+
+    
+      <View style={styles.section}>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>Verification</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>Qualification</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>Services & Products</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>My work details</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>Contracts</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileItem}>
+          <Text style={styles.profileItemText}>Payment Method</Text>
+          <Ionicons name="add-outline" size={24} color="black" /> 
+        </TouchableOpacity>
+      </View>
+
+    
+      <TouchableOpacity style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f9f9f9',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 15,
+  },
+  profileContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  jobTitle: {
+    fontSize: 16,
+    color: '#666',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginVertical: 20,
+  },
+  infoBox: {
+    alignItems: 'center',
+  },
+  infoText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  infoSubText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  section: {
+    paddingHorizontal: 20,
+  },
+  profileItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  profileItemText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  logoutButton: {
+    backgroundColor: '#ff6666',
+    paddingVertical: 15,
+    marginVertical: 20,
+    marginHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});

@@ -1,67 +1,167 @@
-
-import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Image, TextInput,StyleSheet } from "react-native";
-import ScreenWrapper from "../components/screenWrapper";
-import { colors } from "../theme";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+export default function TaskScreen() {
+  const [selectedTab, setSelectedTab] = useState('All');
 
-export default function TasksScreen() {
-    const navigation = useNavigation();
-    const styles = StyleSheet.create({
-      inputIcon: {
-        marginRight: 10,
-      },
-    })
-    
-    return (
-      <ScreenWrapper>
-          <View className="h-full flex justify-around">
-              {/* Bouton de retour */}
-              <TouchableOpacity 
-                  onPress={() => navigation.goBack()} 
-                  className="absolute top-5 left-5 p-2 bg-white rounded-full shadow mb-5"
-              >
-                  <Ionicons name="arrow-back-outline" size={24} color="#0cb444" />
-              </TouchableOpacity>
+  const tasks = [
+    { title: 'Customer Service', date: 'March 25 - 12:00 PM', project: 'Zoho Project', status: 'InProgress' },
+    { title: 'Admin Assistance', date: 'March 25 - 12:00 PM', project: 'Zoho Project', status: 'Completed' },
+    { title: 'Cashier', date: 'March 25 - 12:00 PM', project: 'Zoho Project', status: 'Pending' },
+    { title: 'Customer Service', date: 'March 25 - 12:00 PM', project: 'Zoho Project', status: 'InProgress' },
+    { title: 'Admin Assistance', date: 'March 25 - 12:00 PM', project: 'Zoho Project', status: 'Completed' }
+  ];
 
-              <View className="flex-row justify-center mt-10">
-                  <Image source={require('../assets/images/logo.png')} className="h-70 w-70 shadow" />
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Pending':
+        return styles.statusPending;
+      case 'InProgress':
+        return styles.statusInProgress;
+      case 'Completed':
+        return styles.statusCompleted;
+      default:
+        return {};
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Tab navigation */}
+      <View style={styles.tabContainer}>
+        {['All', 'Pending', 'InProgress', 'Completed'].map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            style={[styles.tabButton, selectedTab === tab && styles.tabButtonActive]}
+            onPress={() => setSelectedTab(tab)}
+          >
+            <Text style={selectedTab === tab ? styles.tabTextActive : styles.tabText}>{tab}</Text>
+          </TouchableOpacity>
+        ))}
+        <TouchableOpacity style={styles.addButton}>
+          <Ionicons name="add-outline" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Task List */}
+      <ScrollView>
+        {tasks
+          .filter((task) => selectedTab === 'All' || task.status === selectedTab)
+          .map((task, index) => (
+            <View key={index} style={styles.taskItem}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="file-tray-full-outline" size={30} color={getStatusStyle(task.status).backgroundColor} />
               </View>
-
-              <View className="flex mr-5 ml-5">
-                  <Text className={` font-normal text-[23px] `}>Veuillez vérifier votre boite mail</Text>
-                  <Text className={` mt-2 leading-normal ${colors.headingColor}`}>Saisissez votre adresse e-mail pour recevoir un e-mail de réinitialisation de votre mot de passe.</Text> 
+              <View style={styles.taskDetails}>
+                <Text style={styles.taskTitle}>{task.title}</Text>
+                <View style={styles.taskInfo}>
+                  <Ionicons name="calendar-outline" size={16} color="#666" />
+                  <Text style={styles.taskDate}>{task.date}</Text>
+                </View>
+                <Text style={styles.taskProject}>For {task.project}</Text>
               </View>
-
-              <View className="space-y-2 mx-4">
-                  <Text className={`font-medium text-[15px] ${colors.headingColor} mb-1`}>Email</Text>
-                  <View className="flex-row items-center bg-white rounded-full p-3">
-                      <Ionicons name="mail-outline" size={20} color="#0cb444" />
-                      <TextInput className="ml-2 flex-1" placeholder="Email" /> s
-                  </View>
-              </View> 
-
-              <View className="mx-5 mb-1">
-                  <TouchableOpacity 
-                      onPress={() => navigation.navigate('MainTabs')} 
-                      className="mb-5 shadow p-3 rounded-full" 
-                      style={{ backgroundColor: colors.buttonColor }}
-                  >
-                      <Text className="text-center font-bold text-white text-lg">Connexion</Text>
-                  </TouchableOpacity>
-                  
-                  <View className="flex-row justify-center items-center mt-1">
-                      <Text className={`font-medium text-base ${colors.textColor}`}>Vous avez déjà un compte ?</Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                          <Text className="text-green-900 font-bold font-medium ml-2 text-[18px]">Se connecter</Text>
-                      </TouchableOpacity>
-                  </View>
+              <View style={[styles.statusBox, getStatusStyle(task.status)]}>
+                <Text style={styles.statusText}>{task.status}</Text>
               </View>
-          </View>
-      </ScreenWrapper>
-    );
-
-
-  
+            </View>
+          ))}
+      </ScrollView>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f4f9fa',
+    paddingHorizontal: 15,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  tabButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: '#e5f1f5',
+  },
+  tabButtonActive: {
+    backgroundColor: '#1DA1F2',
+  },
+  tabText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  tabTextActive: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  addButton: {
+    backgroundColor: '#1DA1F2',
+    padding: 12,
+    borderRadius: 30,
+  },
+  taskItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  iconContainer: {
+    marginRight: 15,
+  },
+  taskDetails: {
+    flex: 1,
+  },
+  taskTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
+  },
+  taskInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  taskDate: {
+    marginLeft: 5,
+    color: '#666',
+    fontSize: 14,
+  },
+  taskProject: {
+    color: '#666',
+    fontSize: 12,
+  },
+  statusBox: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  statusPending: {
+    backgroundColor: '#FF9500',
+  },
+  statusInProgress: {
+    backgroundColor: '#1DA1F2',
+  },
+  statusCompleted: {
+    backgroundColor: '#28A745',
+  },
+});

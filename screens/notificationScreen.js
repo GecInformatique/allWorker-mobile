@@ -1,67 +1,110 @@
-
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Image, TextInput,StyleSheet } from "react-native";
-import ScreenWrapper from "../components/screenWrapper";
-import { colors } from "../theme";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-
+import React, { useState } from 'react';
 
 export default function NotificationScreen() {
     const navigation = useNavigation();
+
+    // Simuler des notifications avec un titre, description, et heure
+    const [notifications, setNotifications] = useState([
+        { id: 1, title: "Commande expédiée", description: "Votre commande #1234 a été expédiée.", time: "14:30", isRead: false },
+        { id: 2, title: "Message reçu", description: "Vous avez un nouveau message de support.", time: "13:00", isRead: true },
+        { id: 3, title: "Facture disponible", description: "Votre facture de juillet est disponible.", time: "10:45", isRead: false },
+        { id: 4, title: "Rendez-vous confirmé", description: "Votre rendez-vous est confirmé pour demain.", time: "09:00", isRead: false },
+        { id: 5, title: "Compte sécurisé", description: "Votre mot de passe a été modifié avec succès.", time: "08:30", isRead: true },
+        { id: 6, title: "Promotion spéciale", description: "Profitez de 20% de réduction cette semaine.", time: "07:45", isRead: false },
+    ]);
+
     const styles = StyleSheet.create({
-      inputIcon: {
-        marginRight: 10,
-      },
-    })
-    
-    return (
-      <ScreenWrapper>
-          <View className="h-full flex justify-around">
-              {/* Bouton de retour */}
-              <TouchableOpacity 
-                  onPress={() => navigation.goBack()} 
-                  className="absolute top-5 left-5 p-2 bg-white rounded-full shadow mb-5"
-              >
-                  <Ionicons name="arrow-back-outline" size={24} color="#0cb444" />
-              </TouchableOpacity>
+        notificationItem: {
+            backgroundColor: '#fff',
+            padding: 15,
+            marginVertical: 8,
+            marginHorizontal: 16,
+            borderRadius: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOpacity: 0.1,
+            shadowOffset: { width: 0, height: 2 },
+            shadowRadius: 8,
+            elevation: 4,
+        },
+        notificationTextContainer: {
+            marginLeft: 10,
+            flex: 1, // pour occuper tout l'espace possible
+        },
+        notificationTitle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#000000',
+        },
+        notificationDescription: {
+            fontSize: 14,
+            color: '#808080',
+            marginTop: 5,
+        },
+        notificationTime: {
+            fontSize: 12,
+            color: '#808080',
+            marginTop: 5,
+            alignSelf: 'flex-end',
+        },
+        notificationTextRead: {
+            color: '#A9A9A9', // Texte plus clair pour les notifications lues
+        },
+        iconContainer: {
+            padding: 10,
+            borderRadius: 50,
+        },
+        iconUnread: {
+            backgroundColor: '#FF6347', // Couleur différente pour non lue
+        },
+        iconRead: {
+            backgroundColor: '#A9A9A9', // Couleur grise pour lue
+        },
+    });
 
-              <View className="flex-row justify-center mt-10">
-                  <Image source={require('../assets/images/logo.png')} className="h-70 w-70 shadow" />
-              </View>
+    // Fonction pour marquer une notification comme lue
+    const markAsRead = (id) => {
+        setNotifications((prevNotifications) =>
+            prevNotifications.map((notif) =>
+                notif.id === id ? { ...notif, isRead: true } : notif
+            )
+        );
+    };
 
-              <View className="flex mr-5 ml-5">
-                  <Text className={` font-normal text-[23px] `}>Veuillez vérifier votre boite mail</Text>
-                  <Text className={` mt-2 leading-normal ${colors.headingColor}`}>Saisissez votre adresse e-mail pour recevoir un e-mail de réinitialisation de votre mot de passe.</Text> 
-              </View>
-
-              <View className="space-y-2 mx-4">
-                  <Text className={`font-medium text-[15px] ${colors.headingColor} mb-1`}>Email</Text>
-                  <View className="flex-row items-center bg-white rounded-full p-3">
-                      <Ionicons name="mail-outline" size={20} color="#0cb444" />
-                      <TextInput className="ml-2 flex-1" placeholder="Email" /> s
-                  </View>
-              </View> 
-
-              <View className="mx-5 mb-1">
-                  <TouchableOpacity 
-                      onPress={() => navigation.navigate('MainTabs')} 
-                      className="mb-5 shadow p-3 rounded-full" 
-                      style={{ backgroundColor: colors.buttonColor }}
-                  >
-                      <Text className="text-center font-bold text-white text-lg">Connexion</Text>
-                  </TouchableOpacity>
-                  
-                  <View className="flex-row justify-center items-center mt-1">
-                      <Text className={`font-medium text-base ${colors.textColor}`}>Vous avez déjà un compte ?</Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                          <Text className="text-green-900 font-bold font-medium ml-2 text-[18px]">Se connecter</Text>
-                      </TouchableOpacity>
-                  </View>
-              </View>
-          </View>
-      </ScreenWrapper>
+    // Fonction pour afficher chaque notification dans la liste
+    const renderNotification = ({ item }) => (
+        <TouchableOpacity onPress={() => markAsRead(item.id)}>
+            <View style={styles.notificationItem}>
+                <View style={[styles.iconContainer, item.isRead ? styles.iconRead : styles.iconUnread]}>
+                    <Ionicons name="notifications-outline" size={24} color="#fff" />
+                </View>
+                <View style={styles.notificationTextContainer}>
+                    <Text style={[styles.notificationTitle, item.isRead && styles.notificationTextRead]}>
+                        {item.title}
+                    </Text>
+                    <Text style={[styles.notificationDescription, item.isRead && styles.notificationTextRead]}>
+                        {item.description}
+                    </Text>
+                    <Text style={styles.notificationTime}>
+                        {item.time}
+                    </Text>
+                </View>
+            </View>
+        </TouchableOpacity>
     );
 
-
-  
+    return (
+        <View style={{ flex: 1 }}>
+            <FlatList
+                data={notifications}
+                renderItem={renderNotification}
+                keyExtractor={(item) => item.id.toString()}
+                showsVerticalScrollIndicator={false} // Pour cacher la barre de défilement
+            />
+        </View>
+    );
 }

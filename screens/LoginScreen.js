@@ -99,7 +99,8 @@ export default function LoginScreen() {
 
               <View className="mx-5 mb-1">
                   <TouchableOpacity 
-                      onPress={handleLogin}  // Fonction de gestion de connexion
+                    onPress={() => navigation.navigate('MainTabs')}
+                    //  onPress={handleLogin}  // Fonction de gestion de connexion
                       className="mb-5 shadow p-3 rounded-full" 
                       style={{ backgroundColor: colors.buttonColor }}
                   >
